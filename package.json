@@ -1,15 +1,55 @@
 {
   "name": "@alessandrolenzi/react-timeline",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.1.2",
+  "license": "ISC",
+  "description": "React Timeline component",
+  "author": "Alessandro Lenzi",
+  "homepage": "https://github.com/alessandro-lenzi/react-timeline",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alessandro-lenzi/react-timeline.git"
+  },
+  "bugs": {
+    "url": "https://github.com/alessandro-lenzi/react-timeline/issues"
+  },
   "type": "module",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/react-timeline.umd.js",
+  "module": "./dist/react-timeline.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/react-timeline.es.js",
+      "require": "./dist/react-timeline.umd.js",
+      "default": "./dist/react-timeline.umd.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./assets": "./dist/assets/",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "**/*.css"
+  ],
   "scripts": {
+    "dev": "vite",
+    "build": "tsc -b ./tsconfig.lib.json && vite build --config vite-lib.config.ts && npm run build:css",
+    "build:css": "tailwindcss -m -i ./src/index.css -o ./dist/styles.css",
+    "build:webapp": "tsc -b && vite build",
+    "build:pack": "npm pack",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build"
+  },
+  "scripts2": {
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
-  "dependencies": {
+  "peerDependencies": {
     "clsx": "^2.1.1",
     "lorem-ipsum": "^2.0.8",
     "motion": "^12.0.1",
@@ -41,6 +81,9 @@
     "typescript": "~5.7.3",
     "typescript-eslint": "^8.21.0",
     "vite": "^6.0.11",
+    "vite-plugin-dts": "^4.5.0",
+    "vite-plugin-lib-inject-css": "^2.2.1",
+    "vite-plugin-static-copy": "^2.2.0",
     "vite-plugin-svgr": "^4.3.0"
   }
 }

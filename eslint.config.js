@@ -6,7 +6,7 @@ import react from 'eslint-plugin-react'
 import reactHooks from 'eslint-plugin-react-hooks'
 import reactRefresh from 'eslint-plugin-react-refresh'
 import globals from 'globals'
-import tseslint from 'typescript-eslint'
+import tseslint, { configs } from 'typescript-eslint'
 
 export default tseslint.config(
   { ignores: ['dist'] },
@@ -18,21 +18,31 @@ export default tseslint.config(
   {
     extends: [
       js.configs.recommended,
-      ...tseslint.configs.recommended,
-      ...tseslint.configs.stylistic,
+      ...configs.recommended,
+      ...configs.stylistic,
     ],
     files: ['**/*.{ts,tsx,js,jsx}'],
     languageOptions: {
       ecmaVersion: 'latest',
       globals: globals.browser,
       parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        project: [
+          './tsconfig.node.json',
+          './tsconfig.app.json',
+          './tsconfig.lib.json',
+        ],
       },
     },
     settings: {
       react: { version: 'detect' },
       'import/resolver': {
-        typescript: { project: 'tsconfig.app.json' },
+        typescript: {
+          project: [
+            './tsconfig.node.json',
+            './tsconfig.app.json',
+            './tsconfig.lib.json',
+          ],
+        },
       },
       'import/parsers': {
         '@typescript-eslint/parser': ['.ts', '.tsx'],
@@ -49,6 +59,13 @@ export default tseslint.config(
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
+      ],
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': [
+        'warn',
+        {
+          additionalHooks: '(useRecoilCallback|useRecoilTransaction_UNSTABLE)',
+        },
       ],
       'import/no-dynamic-require': 'warn',
       'import/no-nodejs-modules': 'warn',
