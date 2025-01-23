@@ -73,7 +73,7 @@ export default defineConfig(({ command, mode }) => {
           },
         },
       },
-      sourcemap: true,
+      sourcemap: false,
       emptyOutDir: true,
     },
   }
