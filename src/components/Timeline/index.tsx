@@ -3,62 +3,77 @@ import { ReactNode } from 'react'
 import clsx from 'clsx'
 import { motion, Variants } from 'motion/react'
 
-export interface TimelineRow {
-  date: Date
-  title: string
+import './styles.css'
+
+export interface BaseEntry {
+  date: string | Date
   icon?: string | ReactNode
-  content?: string | ReactNode
-  detail?: string | ReactNode
+  title?: string
+  description?: string | ReactNode
 }
 
-// type TimelineTree = Record<string, TimelineRow[]>
-type TimelineTree = {
+export type TimelineEntry<T extends object> = BaseEntry & T
+
+// type TimelineTree = Record<string, TimelineEntry[]>
+type TimelineTree<T extends object> = {
   name: string
-  rows: TimelineRow[]
+  entries: TimelineEntry<T>[]
 }[]
 
-export interface TimelineProps {
-  data: TimelineRow[]
+export interface TimelineProps<T extends object> {
+  data: TimelineEntry<T>[]
+  renderContent?: (entry: TimelineEntry<T>) => ReactNode
+  renderDetail?: (entry: TimelineEntry<T>) => ReactNode
 }
 
-interface IOptions {
-  groupColor: string
-  lineColor: string
-  lineWidth: string
-  bulletColor: string
-  bulletSize: string
-  drawBorders: boolean
-}
+// interface IOptions {
+//   // groupColor: string
+//   // lineColor: string
+//   //barWidth: string
+//   // bulletColor: string
+//   // bulletSize: string
+//   drawBorders: boolean
+//   columnMode?: 'dual' | 'single'
+//   position?: 'left' | 'center' | 'right'
+// }
 
-export function Timeline({ data }: TimelineProps) {
-  const sortedData = data.sort((a, b) => b.date.getTime() - a.date.getTime())
+export function Timeline<T extends object>({
+  data,
+  renderContent,
+  renderDetail,
+}: TimelineProps<T>) {
+  const sortedData = data.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  )
 
-  const tree = sortedData.reduce<TimelineTree>(
-    (arr: TimelineTree, row: TimelineRow) => {
-      const group = row.date.getFullYear().toString()
-      const groupIndex = arr.findIndex((val) => val.name === group)
+  const tree = sortedData.reduce<TimelineTree<T>>(
+    (acc: TimelineTree<T>, entry: TimelineEntry<T>) => {
+      const group = new Date(entry.date).getFullYear().toString()
+      const groupIndex = acc.findIndex((val) => val.name === group)
 
       if (groupIndex < 0) {
-        arr.push({
+        acc.push({
           name: group,
-          rows: [row],
+          entries: [entry],
         })
       } else {
-        arr[groupIndex].rows.push(row)
+        acc[groupIndex].entries.push(entry)
       }
-      return arr
+      return acc
     },
     []
   )
 
-  const options: IOptions = {
-    lineColor: '#374151',
-    lineWidth: '2px',
-    groupColor: '#333',
-    bulletColor: '#999999',
-    bulletSize: '12px',
-    drawBorders: false,
-  }
+  // const options: IOptions = {
+  //   // lineColor: '#747b97',
+  //   // barWidth: '2px',
+  //   // groupColor: '#333',
+  //   // bulletColor: '#999999',
+  //   // bulletSize: '12px',
+  //   drawBorders: false,
+  //   columnMode: 'dual',
+  //   position: 'center',
+  // }
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -157,27 +172,18 @@ export function Timeline({ data }: TimelineProps) {
               {/* Middle column/line */}
               <div className="absolute bottom-0 top-0 flex w-[4rem] flex-col items-center">
                 <div
-                  className="flex-1"
-                  style={{
-                    backgroundColor:
-                      groupIndex > 0 ? options.lineColor : 'transparent',
-                    width: options.lineWidth,
-                  }}
+                  className={clsx('timeline-bar flex-1', {
+                    hidden: groupIndex === 0,
+                  })}
                 ></div>
-                <div
-                  className="flex-1"
-                  style={{
-                    backgroundColor: options.lineColor,
-                    width: options.lineWidth,
-                  }}
-                ></div>
+                <div className={clsx('timeline-bar flex-1')}></div>
               </div>
 
               {/* { Group label} */}
               {/* <motion.div className="relative flex w-[4rem] flex-row items-center justify-center"> */}
               <motion.div className="relative flex flex-row items-center justify-center">
                 <div
-                  className="rounded-md border border-gray-700 bg-zinc-800 px-3 py-1"
+                  className="timeline-group-label"
                   style={
                     {
                       // width: options.bulletSize,
@@ -191,10 +197,10 @@ export function Timeline({ data }: TimelineProps) {
               </motion.div>
             </motion.div>
 
-            {/* { Group items rows } */}
-            {group.rows.map((row, index) => (
+            {/* { Group entries } */}
+            {group.entries.map((entry, index) => (
               <motion.div
-                key={row.date.getTime()}
+                key={new Date(entry.date).getTime()}
                 className="relative flex flex-row gap-[4rem]"
                 variants={childVariants}
                 style={{
@@ -208,39 +214,21 @@ export function Timeline({ data }: TimelineProps) {
                 {/* <div className="absolute bottom-0 top-0 flex w-[4rem] flex-col items-center"> */}
                 {/* Middle column/line */}
                 <div className="absolute inset-0 top-0 flex flex-col items-center">
+                  <div className={clsx('timeline-bar flex-1')}></div>
                   <div
-                    className="flex-1"
-                    style={{
-                      backgroundColor: options.lineColor,
-                      width: options.lineWidth,
-                    }}
-                  ></div>
-                  <div
-                    className="flex-1"
-                    style={{
-                      backgroundColor:
-                        index < sortedData.length - 1
-                          ? options.lineColor
-                          : 'transparent',
-                      width: options.lineWidth,
-                    }}
+                    className={clsx('timeline-bar flex-1', {
+                      hidden: index === sortedData.length - 1,
+                    })}
                   ></div>
                 </div>
 
                 {/* <motion.div className="relative flex w-[4rem] flex-row items-center justify-center"> */}
                 {/* Row bullet */}
                 <motion.div className="absolute inset-0 flex flex-row items-center justify-center">
-                  {row.icon ? (
-                    row.icon
+                  {entry.icon ? (
+                    entry.icon
                   ) : (
-                    <div
-                      className="rounded-full"
-                      style={{
-                        width: options.bulletSize,
-                        height: options.bulletSize,
-                        backgroundColor: options.bulletColor,
-                      }}
-                    ></div>
+                    <div className="timeline-bullet"></div>
                   )}
                 </motion.div>
 
@@ -250,24 +238,35 @@ export function Timeline({ data }: TimelineProps) {
                   style={{ transformOrigin: 'center left' }}
                   variants={subVariantLeft}
                 >
-                  {/* head */}
-                  <motion.div
-                    className={clsx({
-                      'flex flex-1 flex-col gap-2 p-4': true,
-                      'shadow-md transition-shadow hover:shadow-white/15':
-                        options.drawBorders,
-                      'rounded-md border border-gray-700 bg-zinc-800':
-                        options.drawBorders,
-                    })}
-                    whileHover={{
-                      scale: 1.05,
-                      shadow: '0 0 10px -1px #ffffff26',
-                    }}
-                  >
-                    <div className="font-bold">{row.title}</div>
-                    <div className="text-[0.8em]">{row.content}</div>
-                  </motion.div>
-                  {/* foot */}
+                  {renderContent ? (
+                    renderContent(entry)
+                  ) : (
+                    <motion.div
+                      className={clsx({
+                        'flex flex-1 cursor-default flex-col gap-2 p-4': true,
+                        'shadow-md transition-shadow hover:shadow-black/15':
+                          true,
+                        'rounded-md border border-gray-700 bg-zinc-800': true,
+                      })}
+                      // initial={{
+                      //   translateY: '0',
+                      //   // boxShadow: '0',
+                      // }}
+                      whileHover={{
+                        // translateY: '-10px',
+                        scale: 1.05,
+                        boxShadow: '0 10px 10px #00000066',
+                        // transition: { ease: 'easeIn', duration: 0.15 },
+                      }}
+                    >
+                      {entry.title && (
+                        <div className="font-bold">{entry.title}</div>
+                      )}
+                      {entry.description ? (
+                        <div className="text-[0.8em]">{entry.description}</div>
+                      ) : null}
+                    </motion.div>
+                  )}
                 </motion.div>
 
                 {/* Row right */}
@@ -276,10 +275,7 @@ export function Timeline({ data }: TimelineProps) {
                   style={{ transformOrigin: 'center left' }}
                   variants={subVariantRight}
                 >
-                  {row.detail}
-                  {/* <div className="flex flex-1 flex-col gap-2 rounded-md p-4">
-                    <div className="font-bold">{row.title}</div>
-                  </div> */}
+                  {renderDetail ? renderDetail(entry) : null}
                 </motion.div>
               </motion.div>
             ))}

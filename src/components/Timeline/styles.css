@@ -1,0 +1,24 @@
+.timeline-bar {
+  background-color: #747b97;
+  width: 2px;
+}
+.dark .timeline-bar {
+}
+
+.timeline-bar.hidden {
+  background-color: transparent;
+}
+
+.timeline-group-label {
+  @apply rounded-md border border-gray-700 bg-zinc-800 px-3 py-1;
+}
+[data-theme='light'] .timeline-group-label {
+  @apply rounded-md border border-gray-300 bg-zinc-200 px-3 py-1 text-gray-700;
+}
+
+.timeline-bullet {
+  @apply rounded-full;
+  width: 12px;
+  height: 12px;
+  background-color: #999999;
+}

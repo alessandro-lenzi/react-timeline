@@ -36,8 +36,10 @@
   },
   "include": [
     "src",
+    ".storybook/**/*",
     "*.js",
     "*.ts",
+    "*.tsx",
     "*.jsx",
     "eslint.config.js",
     "tailwind.config.js",
