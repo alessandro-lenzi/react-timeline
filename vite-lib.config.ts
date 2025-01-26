@@ -52,7 +52,7 @@ export default defineConfig(({ command, mode }) => {
         input: Object.fromEntries(
           glob
             .sync('lib/**/*.{ts,tsx}', {
-              ignore: ['lib/**/*.d.ts', 'lib/**/*.stories.tsx'],
+              ignore: ['lib/**/*.d.ts', 'src/**/*.stories.tsx'],
             })
             .map((file) => [
               path.relative(

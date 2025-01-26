@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react'
 
 import { Timeline } from './'
-import { mockData } from '../../../.storybook/mockData'
+import { mockData } from './mockData'
 
 const meta: Meta<typeof Timeline> = {
   component: Timeline,
