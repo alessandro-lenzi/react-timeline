@@ -14,16 +14,26 @@ export interface BaseEntry {
 
 export type TimelineEntry<T extends object> = BaseEntry & T
 
-// type TimelineTree = Record<string, TimelineEntry[]>
 type TimelineTree<T extends object> = {
   name: string
   entries: TimelineEntry<T>[]
 }[]
 
-export interface TimelineProps<T extends object> {
+interface SingleMode<T extends object> {
+  mode?: 'single'
+  align?: 'left' | 'right'
+  renderDetail?: (entry: TimelineEntry<T>) => ReactNode
+}
+interface SplitMode<T extends object> {
+  mode?: 'split'
+  align?: 'center' | 'left' | 'right'
+  renderDetail: (entry: TimelineEntry<T>) => ReactNode
+}
+
+export type TimelineProps<T extends object> = (SingleMode<T> | SplitMode<T>) & {
   data: TimelineEntry<T>[]
   renderContent?: (entry: TimelineEntry<T>) => ReactNode
-  renderDetail?: (entry: TimelineEntry<T>) => ReactNode
+  // align?: 'center' | 'left' | 'right'
 }
 
 // interface IOptions {
@@ -41,6 +51,8 @@ export function Timeline<T extends object>({
   data,
   renderContent,
   renderDetail,
+  align = 'center',
+  mode = 'split',
 }: TimelineProps<T>) {
   const sortedData = data.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -146,17 +158,7 @@ export function Timeline<T extends object>({
 
   return (
     <div className="relative py-4">
-      {/* <div className="absolute bottom-0 top-0 flex w-[4rem] flex-col items-center">
-        <div
-          className="flex-1"
-          style={{
-            backgroundColor: options.lineColor,
-            width: options.lineWidth,
-          }}
-        ></div>
-      </div> */}
       <motion.div
-        // key="t"
         className="flex flex-col"
         variants={containerVariants}
         initial="hidden"
@@ -166,7 +168,11 @@ export function Timeline<T extends object>({
           <div key={group.name}>
             {/* { Group row } */}
             <motion.div
-              className="relative flex flex-row justify-center"
+              className={clsx('relative flex flex-row', {
+                'justify-center': align === 'center',
+                'justify-start': align === 'left',
+                'justify-end': align === 'right',
+              })}
               variants={childVariants}
             >
               {/* Middle column/line */}
@@ -180,20 +186,8 @@ export function Timeline<T extends object>({
               </div>
 
               {/* { Group label} */}
-              {/* <motion.div className="relative flex w-[4rem] flex-row items-center justify-center"> */}
               <motion.div className="relative flex flex-row items-center justify-center">
-                <div
-                  className="timeline-group-label"
-                  style={
-                    {
-                      // width: options.bulletSize,
-                      // height: options.bulletSize,
-                      // backgroundColor: options.groupColor,
-                    }
-                  }
-                >
-                  {group.name}
-                </div>
+                <div className="timeline-group-label">{group.name}</div>
               </motion.div>
             </motion.div>
 
@@ -201,7 +195,11 @@ export function Timeline<T extends object>({
             {group.entries.map((entry, index) => (
               <motion.div
                 key={new Date(entry.date).getTime()}
-                className="relative flex flex-row gap-[4rem]"
+                className={clsx('relative flex', {
+                  'gap-[4rem]': align === 'center',
+                  'flex-row': mode === 'split',
+                  'flex-col': mode === 'single',
+                })}
                 variants={childVariants}
                 style={{
                   perspective: '1000px',
@@ -211,9 +209,14 @@ export function Timeline<T extends object>({
                 initial="hidden"
                 whileInView="visible"
               >
-                {/* <div className="absolute bottom-0 top-0 flex w-[4rem] flex-col items-center"> */}
                 {/* Middle column/line */}
-                <div className="absolute inset-0 top-0 flex flex-col items-center">
+                <div
+                  className={clsx('absolute top-0 flex flex-col items-center', {
+                    'inset-0': align === 'center',
+                    'bottom-0 w-[4rem]': align === 'left',
+                    'bottom-0 right-0 w-[4rem]': align === 'right',
+                  })}
+                >
                   <div className={clsx('timeline-bar flex-1')}></div>
                   <div
                     className={clsx('timeline-bar flex-1', {
@@ -222,9 +225,17 @@ export function Timeline<T extends object>({
                   ></div>
                 </div>
 
-                {/* <motion.div className="relative flex w-[4rem] flex-row items-center justify-center"> */}
                 {/* Row bullet */}
-                <motion.div className="absolute inset-0 flex flex-row items-center justify-center">
+                <motion.div
+                  className={clsx(
+                    'absolute top-0 flex flex-row items-center justify-center',
+                    {
+                      'inset-0': align === 'center',
+                      'bottom-0 w-[4rem]': align === 'left',
+                      'bottom-0 right-0 w-[4rem]': align === 'right',
+                    }
+                  )}
+                >
                   {entry.icon ? (
                     entry.icon
                   ) : (
@@ -234,7 +245,11 @@ export function Timeline<T extends object>({
 
                 {/* Row left */}
                 <motion.div
-                  className="my-2 flex flex-1 flex-col p-2"
+                  className={clsx('flex flex-1 flex-col p-2', {
+                    'ml-[4rem]': align === 'left',
+                    'mr-[4rem]': align === 'right' && mode === 'single',
+                    'my-2': mode === 'split',
+                  })}
                   style={{ transformOrigin: 'center left' }}
                   variants={subVariantLeft}
                 >
@@ -248,15 +263,9 @@ export function Timeline<T extends object>({
                           true,
                         'rounded-md border border-gray-700 bg-zinc-800': true,
                       })}
-                      // initial={{
-                      //   translateY: '0',
-                      //   // boxShadow: '0',
-                      // }}
                       whileHover={{
-                        // translateY: '-10px',
                         scale: 1.05,
                         boxShadow: '0 10px 10px #00000066',
-                        // transition: { ease: 'easeIn', duration: 0.15 },
                       }}
                     >
                       {entry.title && (
@@ -270,13 +279,20 @@ export function Timeline<T extends object>({
                 </motion.div>
 
                 {/* Row right */}
-                <motion.div
-                  className="flex flex-1 flex-col p-2"
-                  style={{ transformOrigin: 'center left' }}
-                  variants={subVariantRight}
-                >
-                  {renderDetail ? renderDetail(entry) : null}
-                </motion.div>
+                {renderDetail ? (
+                  <motion.div
+                    className={clsx('flex flex-1 flex-col p-2', {
+                      'mr-[4rem]': align === 'right',
+                      'ml-[4rem]': align === 'left' && mode === 'single',
+                      'my-2': mode === 'split',
+                      'mb-2': mode === 'single',
+                    })}
+                    style={{ transformOrigin: 'center left' }}
+                    variants={subVariantRight}
+                  >
+                    {renderDetail ? renderDetail(entry) : null}
+                  </motion.div>
+                ) : null}
               </motion.div>
             ))}
           </div>
