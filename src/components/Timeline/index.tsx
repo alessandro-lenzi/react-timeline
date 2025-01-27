@@ -217,10 +217,12 @@ export function Timeline<T extends object>({
                     'bottom-0 right-0 w-[4rem]': align === 'right',
                   })}
                 >
-                  <div className={clsx('timeline-bar flex-1')}></div>
+                  <div className={clsx('timeline-bar flex-[0.5]')}></div>
                   <div
-                    className={clsx('timeline-bar flex-1', {
-                      hidden: index === sortedData.length - 1,
+                    className={clsx('timeline-bar flex-[0.5]', {
+                      hidden:
+                        groupIndex === tree.length - 1 &&
+                        index === group.entries.length - 1,
                     })}
                   ></div>
                 </div>
