@@ -1,4 +1,4 @@
-import { ReactNode } from 'react'
+import { HTMLAttributes, ReactNode } from 'react'
 
 import clsx from 'clsx'
 import { motion, Variants } from 'motion/react'
@@ -34,7 +34,7 @@ export type TimelineProps<T extends object> = (SingleMode<T> | SplitMode<T>) & {
   data: TimelineEntry<T>[]
   renderContent?: (entry: TimelineEntry<T>) => ReactNode
   // align?: 'center' | 'left' | 'right'
-}
+} & HTMLAttributes<HTMLDivElement>
 
 // interface IOptions {
 //   // groupColor: string
@@ -53,6 +53,7 @@ export function Timeline<T extends object>({
   renderDetail,
   align = 'center',
   mode = 'split',
+  ...props
 }: TimelineProps<T>) {
   const sortedData = data.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
@@ -157,7 +158,7 @@ export function Timeline<T extends object>({
   }
 
   return (
-    <div className="relative py-4">
+    <div {...props} className={clsx('relative py-4', props.className)}>
       <motion.div
         className="flex flex-col"
         variants={containerVariants}
@@ -209,7 +210,7 @@ export function Timeline<T extends object>({
                 initial="hidden"
                 whileInView="visible"
               >
-                {/* Middle column/line */}
+                {/* Timeline bar */}
                 <div
                   className={clsx('absolute top-0 flex flex-col items-center', {
                     'inset-0': align === 'center',
