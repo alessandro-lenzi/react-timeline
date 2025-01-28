@@ -1,92 +1,78 @@
-import { HTMLAttributes, ReactNode } from 'react'
+import { HTMLProps, ReactNode } from 'react';
 
-import clsx from 'clsx'
-import { motion, Variants } from 'motion/react'
+import clsx from 'clsx';
+import { motion, Variants } from 'motion/react';
 
-import './styles.css'
+import { TableOfContents } from './TableOfContents';
+import { TimelineContextProvider } from './TimelineContext';
+import { TrackedSection } from './TrackedSection';
+
+import './styles.css';
 
 export interface BaseEntry {
-  date: string | Date
-  icon?: string | ReactNode
-  title?: string
-  description?: string | ReactNode
+  date: string | Date;
+  icon?: string | ReactNode;
+  title?: string;
+  description?: string | ReactNode;
 }
 
-export type TimelineEntry<T extends object> = BaseEntry & T
+// type Ext = Record<string, string | number>;
 
-type TimelineTree<T extends object> = {
-  name: string
-  entries: TimelineEntry<T>[]
-}[]
+export type TimelineEntry<T> = BaseEntry & T;
 
-interface SingleMode<T extends object> {
-  mode?: 'single'
-  align?: 'left' | 'right'
-  renderDetail?: (entry: TimelineEntry<T>) => ReactNode
+type TimelineSections<T> = {
+  name: string;
+  entries: TimelineEntry<T>[];
+}[];
+
+interface SingleMode<T> {
+  mode?: 'single';
+  align?: 'left' | 'right';
+  renderDetail?: (entry: TimelineEntry<T>) => ReactNode;
 }
-interface SplitMode<T extends object> {
-  mode?: 'split'
-  align?: 'center' | 'left' | 'right'
-  renderDetail: (entry: TimelineEntry<T>) => ReactNode
+interface SplitMode<T> {
+  mode?: 'split';
+  align?: 'center' | 'left' | 'right';
+  renderDetail: (entry: TimelineEntry<T>) => ReactNode;
 }
 
-export type TimelineProps<T extends object> = (SingleMode<T> | SplitMode<T>) & {
-  data: TimelineEntry<T>[]
-  renderContent?: (entry: TimelineEntry<T>) => ReactNode
-  // align?: 'center' | 'left' | 'right'
-} & HTMLAttributes<HTMLDivElement>
+export type TimelineProps<T> = {
+  entries: TimelineEntry<T>[];
+  renderContent?: (entry: TimelineEntry<T>) => ReactNode;
+} & (SingleMode<T> | SplitMode<T>) &
+  HTMLProps<HTMLDivElement>;
 
-// interface IOptions {
-//   // groupColor: string
-//   // lineColor: string
-//   //barWidth: string
-//   // bulletColor: string
-//   // bulletSize: string
-//   drawBorders: boolean
-//   columnMode?: 'dual' | 'single'
-//   position?: 'left' | 'center' | 'right'
-// }
-
-export function Timeline<T extends object>({
-  data,
+export function Timeline<T>({
+  entries,
   renderContent,
   renderDetail,
   align = 'center',
   mode = 'split',
   ...props
 }: TimelineProps<T>) {
-  const sortedData = data.sort(
+  // const { values } = useTimelineContext();
+
+  const sortedData = entries.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-  )
+  );
 
-  const tree = sortedData.reduce<TimelineTree<T>>(
-    (acc: TimelineTree<T>, entry: TimelineEntry<T>) => {
-      const group = new Date(entry.date).getFullYear().toString()
-      const groupIndex = acc.findIndex((val) => val.name === group)
+  const sections = sortedData.reduce<TimelineSections<T>>(
+    (acc: TimelineSections<T>, entry: TimelineEntry<T>) => {
+      const section = new Date(entry.date).getFullYear().toString();
+      const sectionIndex = acc.findIndex((val) => val.name === section);
 
-      if (groupIndex < 0) {
+      if (sectionIndex < 0) {
         acc.push({
-          name: group,
+          name: section,
           entries: [entry],
-        })
+        });
       } else {
-        acc[groupIndex].entries.push(entry)
+        acc[sectionIndex].entries.push(entry);
       }
-      return acc
+      return acc;
     },
     []
-  )
-
-  // const options: IOptions = {
-  //   // lineColor: '#747b97',
-  //   // barWidth: '2px',
-  //   // groupColor: '#333',
-  //   // bulletColor: '#999999',
-  //   // bulletSize: '12px',
-  //   drawBorders: false,
-  //   columnMode: 'dual',
-  //   position: 'center',
-  // }
+  );
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -99,16 +85,7 @@ export function Timeline<T extends object>({
         when: 'beforeChildren',
       },
     },
-  }
-
-  // const staggered: Transition = {
-  //   // duration: 0.8,
-  //   delay: 0.5,
-  //   // ease: [0, 0.71, 0.2, 1.01],
-  //   delayChildren: 1,
-  //   staggerChildren: 0.5,
-  //   // when: 'beforeChildren',
-  // }
+  };
 
   const childVariants: Variants = {
     hidden: {
@@ -130,7 +107,7 @@ export function Timeline<T extends object>({
       transform: 'rotateY(20deg)',
       filter: 'blur(5px)',
     },
-  }
+  };
 
   const subVariantLeft: Variants = {
     hidden: {
@@ -143,7 +120,7 @@ export function Timeline<T extends object>({
       filter: 'blur(0px)',
       transform: 'rotateY(0deg)',
     },
-  }
+  };
   const subVariantRight: Variants = {
     hidden: {
       opacity: 0,
@@ -155,152 +132,172 @@ export function Timeline<T extends object>({
       filter: 'blur(0px)',
       transform: 'rotateY(0deg)',
     },
-  }
+  };
 
   return (
-    <div {...props} className={clsx('relative py-4', props.className)}>
-      <motion.div
-        className="flex flex-col"
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
+    <TimelineContextProvider>
+      <div
+        {...props}
+        className={clsx(
+          'relative grid grid-cols-[10%_1fr] grid-rows-[auto] py-4 lg:grid-cols-[15%_1fr]',
+          props.className
+        )}
       >
-        {tree.map((group, groupIndex) => (
-          <div key={group.name}>
-            {/* { Group row } */}
-            <motion.div
-              className={clsx('relative flex flex-row', {
-                'justify-center': align === 'center',
-                'justify-start': align === 'left',
-                'justify-end': align === 'right',
-              })}
-              variants={childVariants}
+        <TableOfContents />
+        <motion.article
+          className="flex flex-col"
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {sections.map((section, sectionIndex) => (
+            <TrackedSection
+              key={section.name}
+              sectionId={sectionIndex}
+              title={section.name}
+              isFirst={sectionIndex === 0}
+              isLast={sectionIndex === sections.length - 1}
             >
-              {/* Middle column/line */}
-              <div className="absolute bottom-0 top-0 flex w-[4rem] flex-col items-center">
-                <div
-                  className={clsx('timeline-bar flex-1', {
-                    hidden: groupIndex === 0,
-                  })}
-                ></div>
-                <div className={clsx('timeline-bar flex-1')}></div>
-              </div>
-
-              {/* { Group label} */}
-              <motion.div className="relative flex flex-row items-center justify-center">
-                <div className="timeline-group-label">{group.name}</div>
-              </motion.div>
-            </motion.div>
-
-            {/* { Group entries } */}
-            {group.entries.map((entry, index) => (
+              {/* { Group row } */}
               <motion.div
-                key={new Date(entry.date).getTime()}
-                className={clsx('relative flex', {
-                  'gap-[4rem]': align === 'center',
-                  'flex-row': mode === 'split',
-                  'flex-col': mode === 'single',
+                className={clsx('relative flex flex-row', {
+                  'justify-center': align === 'center',
+                  'justify-start': align === 'left',
+                  'justify-end': align === 'right',
                 })}
                 variants={childVariants}
-                style={{
-                  perspective: '1000px',
-                  transformOrigin: 'center left',
-                  transformStyle: 'preserve-3d',
-                }}
-                initial="hidden"
-                whileInView="visible"
               >
-                {/* Timeline bar */}
-                <div
-                  className={clsx('absolute top-0 flex flex-col items-center', {
-                    'inset-0': align === 'center',
-                    'bottom-0 w-[4rem]': align === 'left',
-                    'bottom-0 right-0 w-[4rem]': align === 'right',
-                  })}
-                >
-                  <div className={clsx('timeline-bar flex-[0.5]')}></div>
+                {/* Middle column/line */}
+                <div className="absolute bottom-0 top-0 flex w-[4rem] flex-col items-center">
                   <div
-                    className={clsx('timeline-bar flex-[0.5]', {
-                      hidden:
-                        groupIndex === tree.length - 1 &&
-                        index === group.entries.length - 1,
+                    className={clsx('timeline-bar flex-1', {
+                      hidden: sectionIndex === 0,
                     })}
                   ></div>
+                  <div className={clsx('timeline-bar flex-1')}></div>
                 </div>
 
-                {/* Row bullet */}
-                <motion.div
-                  className={clsx(
-                    'absolute top-0 flex flex-row items-center justify-center',
-                    {
-                      'inset-0': align === 'center',
-                      'bottom-0 w-[4rem]': align === 'left',
-                      'bottom-0 right-0 w-[4rem]': align === 'right',
-                    }
-                  )}
-                >
-                  {entry.icon ? (
-                    entry.icon
-                  ) : (
-                    <div className="timeline-bullet"></div>
-                  )}
+                {/* { Group label} */}
+                <motion.div className="relative flex flex-row items-center justify-center">
+                  <div className="timeline-group-label">{section.name}</div>
                 </motion.div>
+              </motion.div>
 
-                {/* Row left */}
+              {/* { Group entries } */}
+              {section.entries.map((entry, index) => (
                 <motion.div
-                  className={clsx('flex flex-1 flex-col p-2', {
-                    'ml-[4rem]': align === 'left',
-                    'mr-[4rem]': align === 'right' && mode === 'single',
-                    'my-2': mode === 'split',
+                  key={new Date(entry.date).getTime()}
+                  className={clsx('relative flex', {
+                    'gap-[4rem]': align === 'center',
+                    'flex-row': mode === 'split',
+                    'flex-col': mode === 'single',
                   })}
-                  style={{ transformOrigin: 'center left' }}
-                  variants={subVariantLeft}
+                  variants={childVariants}
+                  style={{
+                    perspective: '1000px',
+                    transformOrigin: 'center left',
+                    transformStyle: 'preserve-3d',
+                  }}
+                  initial="hidden"
+                  whileInView="visible"
                 >
-                  {renderContent ? (
-                    renderContent(entry)
-                  ) : (
-                    <motion.div
-                      className={clsx({
-                        'flex flex-1 cursor-default flex-col gap-2 p-4': true,
-                        'shadow-md transition-shadow hover:shadow-black/15':
-                          true,
-                        'rounded-md border border-gray-700 bg-zinc-800': true,
+                  {/* Timeline bar */}
+                  <div
+                    className={clsx(
+                      'absolute top-0 flex flex-col items-center',
+                      {
+                        'inset-0': align === 'center',
+                        'bottom-0 w-[4rem]': align === 'left',
+                        'bottom-0 right-0 w-[4rem]': align === 'right',
+                      }
+                    )}
+                  >
+                    <div className={clsx('timeline-bar flex-[0.5]')}></div>
+                    <div
+                      className={clsx('timeline-bar flex-[0.5]', {
+                        hidden:
+                          sectionIndex === sections.length - 1 &&
+                          index === section.entries.length - 1,
                       })}
-                      whileHover={{
-                        scale: 1.05,
-                        boxShadow: '0 10px 10px #00000066',
-                      }}
-                    >
-                      {entry.title && (
-                        <div className="font-bold">{entry.title}</div>
-                      )}
-                      {entry.description ? (
-                        <div className="text-[0.8em]">{entry.description}</div>
-                      ) : null}
-                    </motion.div>
-                  )}
-                </motion.div>
+                    ></div>
+                  </div>
 
-                {/* Row right */}
-                {renderDetail ? (
+                  {/* Row bullet */}
+                  <motion.div
+                    className={clsx(
+                      'absolute top-0 flex flex-row items-center justify-center',
+                      {
+                        'inset-0': align === 'center',
+                        'bottom-0 w-[4rem]': align === 'left',
+                        'bottom-0 right-0 w-[4rem]': align === 'right',
+                      }
+                    )}
+                  >
+                    {entry.icon ? (
+                      entry.icon
+                    ) : (
+                      <div className="timeline-bullet"></div>
+                    )}
+                  </motion.div>
+
+                  {/* Row left */}
                   <motion.div
                     className={clsx('flex flex-1 flex-col p-2', {
-                      'mr-[4rem]': align === 'right',
-                      'ml-[4rem]': align === 'left' && mode === 'single',
+                      'ml-[4rem]': align === 'left',
+                      'mr-[4rem]': align === 'right' && mode === 'single',
                       'my-2': mode === 'split',
-                      'mb-2': mode === 'single',
                     })}
                     style={{ transformOrigin: 'center left' }}
-                    variants={subVariantRight}
+                    variants={subVariantLeft}
                   >
-                    {renderDetail ? renderDetail(entry) : null}
+                    {renderContent ? (
+                      renderContent(entry)
+                    ) : (
+                      <motion.div
+                        className={clsx({
+                          'flex flex-1 cursor-default flex-col gap-2 p-4': true,
+                          'shadow-md transition-shadow hover:shadow-black/15':
+                            true,
+                          'rounded-md border border-gray-700 bg-zinc-800': true,
+                        })}
+                        whileHover={{
+                          scale: 1.05,
+                          boxShadow: '0 10px 10px #00000066',
+                        }}
+                      >
+                        {entry.title && (
+                          <div className="font-bold">{entry.title}</div>
+                        )}
+                        {entry.description ? (
+                          <div className="text-[0.8em]">
+                            {entry.description}
+                          </div>
+                        ) : null}
+                      </motion.div>
+                    )}
                   </motion.div>
-                ) : null}
-              </motion.div>
-            ))}
-          </div>
-        ))}
-      </motion.div>
-    </div>
-  )
+
+                  {/* Row right */}
+                  {renderDetail ? (
+                    <motion.div
+                      className={clsx('flex flex-1 flex-col p-2', {
+                        'mr-[4rem]': align === 'right',
+                        'ml-[4rem]': align === 'left' && mode === 'single',
+                        'my-2': mode === 'split',
+                        'mb-2': mode === 'single',
+                      })}
+                      style={{ transformOrigin: 'center left' }}
+                      variants={subVariantRight}
+                    >
+                      {renderDetail ? renderDetail(entry) : null}
+                    </motion.div>
+                  ) : null}
+                </motion.div>
+              ))}
+            </TrackedSection>
+          ))}
+        </motion.article>
+      </div>
+    </TimelineContextProvider>
+  );
 }

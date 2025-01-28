@@ -9,9 +9,9 @@ const config = {
   singleQuote: true,
   trailingComma: 'es5',
   arrowParens: 'always',
-  semi: false,
+  semi: true,
   endOfLine: 'auto',
   plugins: ['prettier-plugin-tailwindcss'],
-}
+};
 
-export default config
+export default config;

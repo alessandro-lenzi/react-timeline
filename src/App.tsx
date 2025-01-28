@@ -1,8 +1,8 @@
-import { LoremIpsum } from 'lorem-ipsum'
+import { LoremIpsum } from 'lorem-ipsum';
 
-import './App.css'
-import ThemeSwitch from './components/ThemeSwitch'
-import { Timeline } from './components/Timeline'
+import './App.css';
+import ThemeSwitch from './components/ThemeSwitch';
+import { Timeline } from './components/Timeline';
 
 const lorem = new LoremIpsum({
   sentencesPerParagraph: {
@@ -13,12 +13,12 @@ const lorem = new LoremIpsum({
     max: 16,
     min: 4,
   },
-})
+});
 
 const breakLines = (str: string) =>
   str.split('\n').map((subStr, index) => {
-    return <p key={index}>{subStr}</p>
-  })
+    return <p key={index}>{subStr}</p>;
+  });
 
 function App() {
   return (
@@ -36,7 +36,7 @@ function App() {
               <div className="font-bold">{entry.detail}</div>
             </div>
           )}
-          data={[
+          entries={[
             {
               date: new Date(2024, 5, 1),
               // icon: string | ReactNode
@@ -125,7 +125,7 @@ function App() {
         />
       </main>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

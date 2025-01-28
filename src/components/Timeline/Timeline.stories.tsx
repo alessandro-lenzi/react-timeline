@@ -1,15 +1,15 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj } from '@storybook/react';
 
-import { Timeline } from './'
-import { mockData } from './mockData'
+import { Timeline } from './';
+import { mockData } from './mockData';
 
-const meta: Meta<typeof Timeline> = {
+const meta: Meta<typeof Timeline<{ detail: string }>> = {
   component: Timeline,
   tags: ['autodocs'],
-}
+};
 
-export default meta
-type Story = StoryObj<typeof Timeline<{ detail: string }>>
+export default meta;
+type Story = StoryObj<typeof Timeline<{ detail: string }>>;
 
 export const CenterAligned: Story = {
   args: {
@@ -18,10 +18,10 @@ export const CenterAligned: Story = {
         <div className="font-bold">{entry.detail}</div>
       </div>
     ),
-    data: mockData,
+    entries: mockData,
   },
-}
-CenterAligned.storyName = 'Dual Center'
+};
+CenterAligned.storyName = 'Dual Center';
 
 export const LeftAligned: Story = {
   args: {
@@ -30,11 +30,11 @@ export const LeftAligned: Story = {
         <div className="font-bold">{entry.detail}</div>
       </div>
     ),
-    data: mockData,
+    entries: mockData,
     align: 'left',
   },
-}
-LeftAligned.storyName = 'Dual Left'
+};
+LeftAligned.storyName = 'Dual Left';
 
 export const RightAligned: Story = {
   args: {
@@ -43,11 +43,11 @@ export const RightAligned: Story = {
         <div className="font-bold">{entry.detail}</div>
       </div>
     ),
-    data: mockData,
+    entries: mockData,
     align: 'right',
   },
-}
-RightAligned.storyName = 'Dual Right'
+};
+RightAligned.storyName = 'Dual Right';
 
 export const SingleLeftAligned: Story = {
   args: {
@@ -56,12 +56,12 @@ export const SingleLeftAligned: Story = {
         <div className="font-bold">{entry.detail}</div>
       </div>
     ),
-    data: mockData,
+    entries: mockData,
     mode: 'single',
     align: 'left',
   },
-}
-SingleLeftAligned.storyName = 'Single Left'
+};
+SingleLeftAligned.storyName = 'Single Left';
 
 export const SingleRightAligned: Story = {
   args: {
@@ -70,12 +70,12 @@ export const SingleRightAligned: Story = {
         <div className="font-bold">{entry.detail}</div>
       </div>
     ),
-    data: mockData,
+    entries: mockData,
     mode: 'single',
     align: 'right',
   },
-}
-SingleRightAligned.storyName = 'Single Right'
+};
+SingleRightAligned.storyName = 'Single Right';
 
 export const SingleLeftAlignedNoDetail: Story = {
   args: {
@@ -84,9 +84,9 @@ export const SingleLeftAlignedNoDetail: Story = {
     //     <div className="font-bold">{entry.detail}</div>
     //   </div>
     // ),
-    data: mockData,
+    entries: mockData,
     mode: 'single',
     align: 'left',
   },
-}
-SingleLeftAlignedNoDetail.storyName = 'Single Left, no detail'
+};
+SingleLeftAlignedNoDetail.storyName = 'Single Left, no detail';
