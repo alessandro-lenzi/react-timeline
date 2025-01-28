@@ -1,21 +1,20 @@
 /* eslint-disable import/no-nodejs-modules */
-import * as path from 'path'
-import { fileURLToPath } from 'url'
+import * as path from 'path';
+import { fileURLToPath } from 'url';
 
-import react from '@vitejs/plugin-react-swc'
-import { glob } from 'glob'
-import tailwindcss from 'tailwindcss'
-import { defineConfig } from 'vite'
-import dts from 'vite-plugin-dts'
-import { libInjectCss } from 'vite-plugin-lib-inject-css'
+import react from '@vitejs/plugin-react-swc';
+import { glob } from 'glob';
+import tailwindcss from 'tailwindcss';
+import { defineConfig } from 'vite';
+import dts from 'vite-plugin-dts';
+import { libInjectCss } from 'vite-plugin-lib-inject-css';
 // import { viteStaticCopy } from 'vite-plugin-static-copy'
 
-import { peerDependencies } from './package.json'
+import { peerDependencies } from './package.json';
 
 // https://vitejs.dev/config/
 
-export default defineConfig(({ command, mode }) => {
-  console.log(`[VITE COMMAND] ${command} ${mode}`)
+export default defineConfig(() => {
   return {
     plugins: [
       react(),
@@ -76,5 +75,5 @@ export default defineConfig(({ command, mode }) => {
       sourcemap: false,
       emptyOutDir: true,
     },
-  }
-})
+  };
+});

@@ -1,4 +1,4 @@
-import { HTMLProps, ReactNode } from 'react';
+import { HTMLProps, ReactNode, useRef } from 'react';
 
 import clsx from 'clsx';
 import { motion, Variants } from 'motion/react';
@@ -15,8 +15,6 @@ export interface BaseEntry {
   title?: string;
   description?: string | ReactNode;
 }
-
-// type Ext = Record<string, string | number>;
 
 export type TimelineEntry<T> = BaseEntry & T;
 
@@ -50,8 +48,6 @@ export function Timeline<T>({
   mode = 'split',
   ...props
 }: TimelineProps<T>) {
-  // const { values } = useTimelineContext();
-
   const sortedData = entries.sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
   );
@@ -134,6 +130,8 @@ export function Timeline<T>({
     },
   };
 
+  const containerRef = useRef(null);
+
   return (
     <TimelineContextProvider>
       <div
@@ -145,6 +143,7 @@ export function Timeline<T>({
       >
         <TableOfContents />
         <motion.article
+          ref={containerRef}
           className="flex flex-col"
           variants={containerVariants}
           initial="hidden"

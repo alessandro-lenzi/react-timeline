@@ -25,7 +25,7 @@ export const TrackedSection = ({
   const container = useRef(null);
   const { scrollYProgress } = useScroll({
     target: container,
-    offset: ['start center', 'end center'],
+    offset: ['start start', 'end end'],
   });
 
   scrollYProgress.on('change', (value) => {

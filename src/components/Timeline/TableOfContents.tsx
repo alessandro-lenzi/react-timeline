@@ -27,7 +27,6 @@ export const TableOfContents = () => {
                 'text-neutral-800': activeSection !== id,
               })}
               onClick={() => {
-                console.log(`clicked section ${id}`);
                 document
                   .getElementById(`timeline-section-${id}`)
                   ?.scrollIntoView({ behavior: 'smooth' });
