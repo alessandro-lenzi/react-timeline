@@ -1,4 +1,4 @@
-import { HTMLProps, useEffect, useRef } from 'react';
+import { HTMLProps, useEffect, useRef, useState } from 'react';
 
 import { useScroll } from 'motion/react';
 
@@ -9,6 +9,7 @@ export const TrackedSection = ({
   title,
   isFirst = false,
   isLast = false,
+  children,
   ...props
 }: {
   isFirst?: boolean;
@@ -16,7 +17,8 @@ export const TrackedSection = ({
   sectionId: number;
   title: string;
 } & HTMLProps<HTMLElement>) => {
-  const { registerSection, setActiveSection } = useTimelineContext();
+  const { registerSection, setActiveSection, debug } = useTimelineContext();
+  const [valueY, setValueY] = useState(0);
 
   useEffect(() => {
     registerSection({ id: sectionId, title });
@@ -25,7 +27,7 @@ export const TrackedSection = ({
   const container = useRef(null);
   const { scrollYProgress } = useScroll({
     target: container,
-    offset: ['start start', 'end end'],
+    offset: ['start center', 'end center'],
   });
 
   scrollYProgress.on('change', (value) => {
@@ -35,14 +37,25 @@ export const TrackedSection = ({
     if ((value <= 0 && isFirst) || (value >= 1 && isLast)) {
       setActiveSection(-1);
     }
+    setValueY(value);
   });
 
   return (
     <section
       ref={container}
       id={`timeline-section-${sectionId}`}
-      style={{ scrollMargin: '15vh' }}
+      style={{ scrollMargin: '25vh' }}
       {...props}
-    ></section>
+    >
+      {debug && (
+        <div
+          className="fixed border border-green-500 bg-black/50"
+          style={{ top: `${sectionId * 32}px`, left: '50px' }}
+        >
+          {sectionId} {title} - {valueY}
+        </div>
+      )}
+      {children}
+    </section>
   );
 };

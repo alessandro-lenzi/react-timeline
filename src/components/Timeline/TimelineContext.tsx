@@ -10,9 +10,11 @@ interface TimelineContextType {
   registerSection: (section: Section) => void;
   activeSection: number;
   setActiveSection: (sectionId: number) => void;
+  debug: boolean;
 }
 
 interface TimelineContextProviderProps {
+  debug?: boolean;
   children: ReactNode;
 }
 
@@ -21,9 +23,11 @@ const TimelineContext = createContext<TimelineContextType>({
   registerSection: () => {},
   activeSection: 0,
   setActiveSection: () => {},
+  debug: false,
 });
 
 export const TimelineContextProvider = ({
+  debug = false,
   children,
 }: TimelineContextProviderProps) => {
   const [activeSection, setActiveSection] = useState(-1);
@@ -48,6 +52,7 @@ export const TimelineContextProvider = ({
         registerSection,
         activeSection,
         setActiveSection,
+        debug,
       }}
     >
       {children}

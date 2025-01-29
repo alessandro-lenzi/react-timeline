@@ -37,6 +37,7 @@ interface SplitMode<T> {
 export type TimelineProps<T> = {
   entries: TimelineEntry<T>[];
   renderContent?: (entry: TimelineEntry<T>) => ReactNode;
+  debug?: boolean;
 } & (SingleMode<T> | SplitMode<T>) &
   HTMLProps<HTMLDivElement>;
 
@@ -46,6 +47,7 @@ export function Timeline<T>({
   renderDetail,
   align = 'center',
   mode = 'split',
+  debug = false,
   ...props
 }: TimelineProps<T>) {
   const sortedData = entries.sort(
@@ -133,7 +135,7 @@ export function Timeline<T>({
   const containerRef = useRef(null);
 
   return (
-    <TimelineContextProvider>
+    <TimelineContextProvider debug={debug}>
       <div
         {...props}
         className={clsx(
@@ -177,7 +179,7 @@ export function Timeline<T>({
                 </div>
 
                 {/* { Group label} */}
-                <motion.div className="relative flex flex-row items-center justify-center">
+                <motion.div className="relative flex w-[4rem] flex-row items-center justify-center">
                   <div className="timeline-group-label">{section.name}</div>
                 </motion.div>
               </motion.div>

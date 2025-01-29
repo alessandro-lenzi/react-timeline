@@ -31,6 +31,7 @@ function App() {
       </div>
       <main className="max-w-[1024px] p-10">
         <Timeline
+          debug={true}
           renderDetail={(entry) => (
             <div className="flex flex-1 flex-col gap-2 rounded-md p-6">
               <div className="font-bold">{entry.detail}</div>
