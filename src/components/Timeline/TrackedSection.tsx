@@ -1,6 +1,6 @@
 import { HTMLProps, useEffect, useRef, useState } from 'react';
 
-import { useScroll } from 'motion/react';
+import { useMotionValueEvent, useScroll } from 'motion/react';
 
 import { useTimelineContext } from './TimelineContext';
 
@@ -25,12 +25,13 @@ export const TrackedSection = ({
   }, []);
 
   const container = useRef(null);
+
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ['start center', 'end center'],
   });
 
-  scrollYProgress.on('change', (value) => {
+  useMotionValueEvent(scrollYProgress, 'change', (value) => {
     if (value > 0 && value < 1) {
       setActiveSection(sectionId);
     }
