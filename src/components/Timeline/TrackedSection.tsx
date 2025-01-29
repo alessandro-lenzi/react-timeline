@@ -42,21 +42,24 @@ export const TrackedSection = ({
   });
 
   return (
-    <section
-      ref={container}
-      id={`timeline-section-${sectionId}`}
-      style={{ scrollMargin: '25vh' }}
-      {...props}
-    >
-      {debug && (
-        <div
-          className="fixed border border-green-500 bg-black/50"
-          style={{ top: `${sectionId * 32}px`, left: '50px' }}
-        >
-          {sectionId} {title} - {valueY}
-        </div>
-      )}
-      {children}
-    </section>
+    <>
+      <section
+        ref={container}
+        id={`timeline-section-${sectionId}`}
+        style={{ scrollMargin: '25vh' }}
+        {...props}
+      >
+        {debug && (
+          <div
+            className="fixed border border-green-500 bg-black/50"
+            style={{ top: `${sectionId * 32}px`, left: '50px' }}
+          >
+            {sectionId} {title} - {valueY}
+          </div>
+        )}
+
+        {children}
+      </section>
+    </>
   );
 };

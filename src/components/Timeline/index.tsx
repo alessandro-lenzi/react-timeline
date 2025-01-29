@@ -139,7 +139,7 @@ export function Timeline<T>({
       <div
         {...props}
         className={clsx(
-          'relative grid grid-cols-[10%_1fr] grid-rows-[auto] py-4 lg:grid-cols-[15%_1fr]',
+          'grid grid-cols-[10%_1fr] grid-rows-[auto] py-4 lg:grid-cols-[15%_1fr]',
           props.className
         )}
       >
@@ -161,7 +161,7 @@ export function Timeline<T>({
             >
               {/* { Group row } */}
               <motion.div
-                className={clsx('relative flex flex-row', {
+                className={clsx('flex flex-row', {
                   'justify-center': align === 'center',
                   'justify-start': align === 'left',
                   'justify-end': align === 'right',
@@ -188,7 +188,7 @@ export function Timeline<T>({
               {section.entries.map((entry, index) => (
                 <motion.div
                   key={new Date(entry.date).getTime()}
-                  className={clsx('relative flex', {
+                  className={clsx('flex', {
                     'gap-[4rem]': align === 'center',
                     'flex-row': mode === 'split',
                     'flex-col': mode === 'single',
