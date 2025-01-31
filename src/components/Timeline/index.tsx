@@ -1,7 +1,7 @@
-import { HTMLProps, ReactNode, useRef } from 'react';
+import { ReactNode, useRef } from 'react';
 
 import clsx from 'clsx';
-import { motion, Variants } from 'motion/react';
+import { HTMLMotionProps, motion, Variants } from 'motion/react';
 
 import { TableOfContents } from './TableOfContents';
 import { TimelineContextProvider } from './TimelineContext';
@@ -39,7 +39,7 @@ export type TimelineProps<T> = {
   renderContent?: (entry: TimelineEntry<T>) => ReactNode;
   debug?: boolean;
 } & (SingleMode<T> | SplitMode<T>) &
-  HTMLProps<HTMLDivElement>;
+  HTMLMotionProps<'div'>;
 
 export function Timeline<T>({
   entries,
@@ -136,7 +136,7 @@ export function Timeline<T>({
 
   return (
     <TimelineContextProvider debug={debug}>
-      <div
+      <motion.div
         {...props}
         className={clsx(
           'grid grid-cols-[10%_1fr] grid-rows-[auto] py-4 lg:grid-cols-[15%_1fr]',
@@ -298,7 +298,7 @@ export function Timeline<T>({
             </TrackedSection>
           ))}
         </motion.article>
-      </div>
+      </motion.div>
     </TimelineContextProvider>
   );
 }
