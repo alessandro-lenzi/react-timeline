@@ -34,7 +34,7 @@ export const TableOfContents = ({
               key={id}
               className={clsx('cursor-pointer transition-colors duration-200', {
                 'text-neutral-300': activeSection === id,
-                'text-neutral-800': activeSection !== id,
+                'text-neutral-600': activeSection !== id,
               })}
               onClick={() => {
                 document
