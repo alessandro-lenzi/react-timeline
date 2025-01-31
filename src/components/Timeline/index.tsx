@@ -79,7 +79,6 @@ export function Timeline<T>({
       transition: {
         duration: 0.5,
         staggerChildren: 0.5,
-        // delayChildren: 1.5,
         when: 'beforeChildren',
       },
     },
@@ -89,20 +88,19 @@ export function Timeline<T>({
     hidden: {
       opacity: 0,
       filter: 'blur(10px)',
-      transform: 'rotateY(20deg)',
+      // transform: 'rotateY(20deg)',
     },
     visible: {
       opacity: 1,
       filter: 'blur(0px)',
-      transform: 'scale(1) rotateY(0deg)',
+      // transform: 'scale(1) rotateY(0deg)',
       transition: {
         staggerChildren: 0.5,
         when: 'beforeChildren',
       },
     },
     hover: {
-      // transform: 'scale(0.8) rotateY(20deg)',
-      transform: 'rotateY(20deg)',
+      // transform: 'rotateY(20deg)',
       filter: 'blur(5px)',
     },
   };
@@ -111,24 +109,24 @@ export function Timeline<T>({
     hidden: {
       opacity: 0,
       filter: 'blur(10px)',
-      transform: 'translateX(-100px) rotateY(20deg)',
+      // transform: 'translateX(-100px) rotateY(20deg)',
     },
     visible: {
       opacity: 1,
       filter: 'blur(0px)',
-      transform: 'rotateY(0deg)',
+      // transform: 'rotateY(0deg)',
     },
   };
   const subVariantRight: Variants = {
     hidden: {
       opacity: 0,
       filter: 'blur(10px)',
-      transform: 'translateX(100px) rotateY(20deg)',
+      // transform: 'translateX(100px) rotateY(20deg)',
     },
     visible: {
       opacity: 1,
       filter: 'blur(0px)',
-      transform: 'rotateY(0deg)',
+      // transform: 'rotateY(0deg)',
     },
   };
 
@@ -144,7 +142,7 @@ export function Timeline<T>({
         )}
       >
         <TableOfContents />
-        <motion.article
+        <motion.div
           ref={containerRef}
           className="flex flex-col"
           variants={containerVariants}
@@ -194,11 +192,13 @@ export function Timeline<T>({
                     'flex-col': mode === 'single',
                   })}
                   variants={childVariants}
-                  style={{
-                    perspective: '1000px',
-                    transformOrigin: 'center left',
-                    transformStyle: 'preserve-3d',
-                  }}
+                  style={
+                    {
+                      // perspective: '1000px',
+                      // transformOrigin: 'center left',
+                      // transformStyle: 'preserve-3d',
+                    }
+                  }
                   initial="hidden"
                   whileInView="visible"
                 >
@@ -297,7 +297,7 @@ export function Timeline<T>({
               ))}
             </TrackedSection>
           ))}
-        </motion.article>
+        </motion.div>
       </motion.div>
     </TimelineContextProvider>
   );

@@ -1,6 +1,11 @@
-import { HTMLProps, useEffect, useRef, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 
-import { useMotionValueEvent, useScroll } from 'motion/react';
+import {
+  HTMLMotionProps,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from 'motion/react';
 
 import { useTimelineContext } from './TimelineContext';
 
@@ -16,7 +21,8 @@ export const TrackedSection = ({
   isLast?: boolean;
   sectionId: number;
   title: string;
-} & HTMLProps<HTMLElement>) => {
+  children?: ReactNode;
+} & HTMLMotionProps<'div'>) => {
   const { registerSection, setActiveSection, debug } = useTimelineContext();
   const [valueY, setValueY] = useState(0);
 
@@ -43,7 +49,7 @@ export const TrackedSection = ({
 
   return (
     <>
-      <section
+      <motion.div
         ref={container}
         id={`timeline-section-${sectionId}`}
         style={{ scrollMargin: '25vh' }}
@@ -59,7 +65,7 @@ export const TrackedSection = ({
         )}
 
         {children}
-      </section>
+      </motion.div>
     </>
   );
 };
