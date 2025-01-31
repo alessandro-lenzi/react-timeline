@@ -141,7 +141,7 @@ export function Timeline<T>({
           props.className
         )}
       >
-        <TableOfContents />
+        <TableOfContents containerRef={containerRef} />
         <motion.div
           ref={containerRef}
           className="flex flex-col"

@@ -1,12 +1,21 @@
+import { RefObject } from 'react';
+
 import clsx from 'clsx';
 import { motion, useScroll, useTransform } from 'motion/react';
 
 import { useTimelineContext } from './TimelineContext';
 
-export const TableOfContents = () => {
+export const TableOfContents = ({
+  containerRef,
+}: {
+  containerRef?: RefObject<HTMLElement | null>;
+}) => {
   const { sections, activeSection } = useTimelineContext();
 
-  const { scrollYProgress } = useScroll();
+  const { scrollYProgress } = useScroll({
+    // container: containerRef,
+    target: containerRef,
+  });
   const progressHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
   return (
