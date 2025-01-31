@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useMemo, useState } from 'react';
 
 export interface Section {
   id: number;
@@ -45,16 +45,19 @@ export const TimelineContextProvider = ({
     return uniqueSections;
   };
 
+  const value = useMemo(
+    () => ({
+      sections: prepareSections(sections),
+      registerSection,
+      activeSection,
+      setActiveSection,
+      debug,
+    }),
+    [sections, activeSection, debug]
+  );
+
   return (
-    <TimelineContext.Provider
-      value={{
-        sections: prepareSections(sections),
-        registerSection,
-        activeSection,
-        setActiveSection,
-        debug,
-      }}
-    >
+    <TimelineContext.Provider value={value}>
       {children}
     </TimelineContext.Provider>
   );
