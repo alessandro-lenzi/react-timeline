@@ -35,6 +35,7 @@ export const TrackedSection = ({
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ['start center', 'end center'],
+    layoutEffect: true,
   });
 
   useMotionValueEvent(scrollYProgress, 'change', (value) => {
@@ -52,7 +53,7 @@ export const TrackedSection = ({
       <motion.div
         ref={container}
         id={`timeline-section-${sectionId}`}
-        // style={{ scrollMargin: '25vh' }}
+        style={{ scrollMargin: '15vh' }}
         {...props}
       >
         {debug && (
