@@ -23,8 +23,13 @@ export const TrackedSection = ({
   title: string;
   children?: ReactNode;
 } & HTMLMotionProps<'div'>) => {
-  const { registerSection, activeSection, setActiveSection, debug } =
-    useTimelineContext();
+  const {
+    scrollOffset,
+    registerSection,
+    activeSection,
+    setActiveSection,
+    debug,
+  } = useTimelineContext();
   const [valueY, setValueY] = useState(0);
 
   useEffect(() => {
@@ -35,7 +40,8 @@ export const TrackedSection = ({
 
   const { scrollYProgress } = useScroll({
     target: container,
-    offset: ['start center', 'end center'],
+    offset:
+      scrollOffset === 'center' ? ['start center', 'end center'] : undefined,
     layoutEffect: false,
   });
 

@@ -6,6 +6,7 @@ export interface Section {
 }
 
 interface TimelineContextType {
+  scrollOffset?: 'start' | 'center';
   sections: Section[];
   registerSection: (section: Section) => void;
   activeSection: number;
@@ -19,6 +20,7 @@ interface TimelineContextProviderProps {
 }
 
 const TimelineContext = createContext<TimelineContextType>({
+  scrollOffset: 'start',
   sections: [],
   registerSection: () => {},
   activeSection: 0,
@@ -30,6 +32,7 @@ export const TimelineContextProvider = ({
   debug = false,
   children,
 }: TimelineContextProviderProps) => {
+  const [scrollOffset] = useState<'start' | 'center' | undefined>('start');
   const [activeSection, setActiveSection] = useState(-1);
   const [sections, setSections] = useState<Section[]>([]);
 
@@ -47,13 +50,14 @@ export const TimelineContextProvider = ({
 
   const value = useMemo(
     () => ({
+      scrollOffset,
       sections: prepareSections(sections),
       registerSection,
       activeSection,
       setActiveSection,
       debug,
     }),
-    [sections, activeSection, debug]
+    [scrollOffset, sections, activeSection, debug]
   );
 
   return (
