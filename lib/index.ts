@@ -1,3 +1,3 @@
-import { Timeline } from '../src/components/Timeline'
+import { Timeline } from '../src/components/Timeline';
 
-export { Timeline }
+export { Timeline };

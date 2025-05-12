@@ -35,6 +35,7 @@ interface SplitMode<T> {
 }
 
 export type TimelineProps<T> = {
+  scrollOffset?: 'start' | 'center';
   entries: TimelineEntry<T>[];
   renderContent?: (entry: TimelineEntry<T>) => ReactNode;
   debug?: boolean;
@@ -42,6 +43,7 @@ export type TimelineProps<T> = {
   HTMLMotionProps<'div'>;
 
 export function Timeline<T>({
+  scrollOffset,
   entries,
   renderContent,
   renderDetail,
@@ -133,7 +135,7 @@ export function Timeline<T>({
   const containerRef = useRef(null);
 
   return (
-    <TimelineContextProvider debug={debug}>
+    <TimelineContextProvider scrollOffset={scrollOffset} debug={debug}>
       <motion.div
         {...props}
         className={clsx(
