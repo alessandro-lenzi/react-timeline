@@ -45,7 +45,13 @@ export const TrackedSection = ({
     layoutEffect: false,
   });
 
-  useMotionValueEvent(scrollYProgress, 'change', (value) => {
+  useMotionValueEvent(scrollYProgress, 'change', (argValue) => {
+    let value = argValue;
+    if (activeSection === -1 && value === 1) {
+      console.log(`zeroing ${sectionId}`);
+      value = 0;
+    }
+
     if ((activeSection === -1 && isFirst) || activeSection >= 0) {
       console.log(`scrollYProgress[${sectionId}] ${value}`);
       if (value > 0 && value <= 1) {
