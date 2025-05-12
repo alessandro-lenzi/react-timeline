@@ -34,16 +34,17 @@ export const TrackedSection = ({
 
   const { scrollYProgress } = useScroll({
     target: container,
-    offset: ['start center', 'end center'],
+    // offset: ['start center', 'end center'],
     layoutEffect: true,
   });
 
   useMotionValueEvent(scrollYProgress, 'change', (value) => {
+    console.log(`scrollYProgress[${sectionId}] ${value}`);
     if (value > 0 && value < 1) {
       setActiveSection(sectionId);
     }
     if ((value <= 0 && isFirst) || (value >= 1 && isLast)) {
-      setActiveSection(-1);
+      setActiveSection(sectionId);
     }
     setValueY(value);
   });

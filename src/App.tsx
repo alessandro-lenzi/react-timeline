@@ -25,12 +25,21 @@ function App() {
     <>
       <div className="flex flex-row justify-between">
         <h1>@alessandrolenzi/react-timeline</h1>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
         <div className="self-end">
           <ThemeSwitch />
         </div>
       </div>
       <main className="max-w-[1024px] p-10">
         <Timeline
+          mode="single"
+          align="left"
           debug={true}
           renderDetail={(entry) => (
             <div className="flex flex-1 flex-col gap-2 rounded-md p-6">
