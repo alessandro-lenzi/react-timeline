@@ -19,7 +19,7 @@ export const TableOfContents = ({
   });
   const progressHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 
-  console.log(`toc progress = ${progressHeight}`);
+  console.log(`toc progress = ${progressHeight.get()}`);
 
   return (
     <div className="px-4">
