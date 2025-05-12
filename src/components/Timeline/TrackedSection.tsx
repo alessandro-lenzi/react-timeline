@@ -69,7 +69,7 @@ export const TrackedSection = ({
       <motion.div
         ref={container}
         id={`timeline-section-${sectionId}`}
-        style={{ scrollMargin: '15vh' }}
+        style={{ scrollMargin: '5vh' }}
         {...props}
       >
         {debug && (
