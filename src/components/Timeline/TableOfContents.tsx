@@ -15,7 +15,7 @@ export const TableOfContents = ({
   const { scrollYProgress } = useScroll({
     // container: containerRef,
     target: containerRef,
-    layoutEffect: true,
+    layoutEffect: false,
   });
   const progressHeight = useTransform(scrollYProgress, [0, 1], ['0%', '100%']);
 

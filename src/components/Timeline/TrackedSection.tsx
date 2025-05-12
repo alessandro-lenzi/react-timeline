@@ -23,7 +23,8 @@ export const TrackedSection = ({
   title: string;
   children?: ReactNode;
 } & HTMLMotionProps<'div'>) => {
-  const { registerSection, setActiveSection, debug } = useTimelineContext();
+  const { registerSection, activeSection, setActiveSection, debug } =
+    useTimelineContext();
   const [valueY, setValueY] = useState(0);
 
   useEffect(() => {
@@ -34,17 +35,19 @@ export const TrackedSection = ({
 
   const { scrollYProgress } = useScroll({
     target: container,
-    // offset: ['start center', 'end center'],
-    layoutEffect: true,
+    offset: ['start center', 'end center'],
+    layoutEffect: false,
   });
 
   useMotionValueEvent(scrollYProgress, 'change', (value) => {
-    console.log(`scrollYProgress[${sectionId}] ${value}`);
-    if (value > 0 && value < 1) {
-      setActiveSection(sectionId);
-    }
-    if ((value <= 0 && isFirst) || (value >= 1 && isLast)) {
-      setActiveSection(sectionId);
+    if ((activeSection === -1 && isFirst) || activeSection >= 0) {
+      console.log(`scrollYProgress[${sectionId}] ${value}`);
+      if (value > 0 && value < 1) {
+        setActiveSection(sectionId);
+      }
+      if ((value <= 0 && isFirst) || (value >= 1 && isLast)) {
+        setActiveSection(sectionId);
+      }
     }
     setValueY(value);
   });

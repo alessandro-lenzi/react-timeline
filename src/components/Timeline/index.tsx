@@ -144,7 +144,7 @@ export function Timeline<T>({
         <TableOfContents containerRef={containerRef} />
         <motion.div
           ref={containerRef}
-          className="flex flex-col"
+          className="relative flex flex-col"
           variants={containerVariants}
           initial="hidden"
           animate="visible"
