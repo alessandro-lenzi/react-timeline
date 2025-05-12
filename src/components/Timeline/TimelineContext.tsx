@@ -15,12 +15,13 @@ interface TimelineContextType {
 }
 
 interface TimelineContextProviderProps {
+  scrollOffset?: 'start' | 'center';
   debug?: boolean;
   children: ReactNode;
 }
 
 const TimelineContext = createContext<TimelineContextType>({
-  scrollOffset: 'start',
+  scrollOffset: 'center',
   sections: [],
   registerSection: () => {},
   activeSection: 0,
@@ -29,10 +30,10 @@ const TimelineContext = createContext<TimelineContextType>({
 });
 
 export const TimelineContextProvider = ({
+  scrollOffset = 'center',
   debug = false,
   children,
 }: TimelineContextProviderProps) => {
-  const [scrollOffset] = useState<'start' | 'center' | undefined>('start');
   const [activeSection, setActiveSection] = useState(-1);
   const [sections, setSections] = useState<Section[]>([]);
 
