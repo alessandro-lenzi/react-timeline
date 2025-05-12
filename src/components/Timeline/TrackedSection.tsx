@@ -48,7 +48,7 @@ export const TrackedSection = ({
   useMotionValueEvent(scrollYProgress, 'change', (value) => {
     if ((activeSection === -1 && isFirst) || activeSection >= 0) {
       console.log(`scrollYProgress[${sectionId}] ${value}`);
-      if (value > 0 && value < 1) {
+      if (value > 0 && value <= 1) {
         setActiveSection(sectionId);
       }
       if ((value <= 0 && isFirst) || (value >= 1 && isLast)) {
